@@ -4,7 +4,7 @@ import zipfile
 import io
 import re
 from datetime import datetime
-
+import google.generativeai as genai
 try:
     import fitz
 except ImportError:
@@ -224,14 +224,27 @@ init_state()
 # ─── HELPERS ──────────────────────────────────────────────────────────────────
 def get_model():
     if not GENAI_AVAILABLE:
+        st.error("google-generativeai package not installed.")
         return None
+
     key = st.session_state.get("api_key", "").strip()
+
     if not key:
+        st.error("No API key provided.")
         return None
+
     try:
         genai.configure(api_key=key)
-        return genai.GenerativeModel("gemini-2.0-flash-lite")
-    except Exception:
+
+        model = genai.GenerativeModel("gemini-2.5-flash")
+
+        # Test connection
+        model.generate_content("Hello")
+
+        return model
+
+    except Exception as e:
+        st.error(f"Gemini Error: {e}")
         return None
 
 def call_gemini(prompt: str, max_tokens: int = 2000) -> str:
