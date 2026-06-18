@@ -12,7 +12,7 @@
       "dest": "app.py"
     }
   ],
-  "maxDuration": 300,
+
   "env": {
     "MPLCONFIGDIR": "/tmp"
   }
